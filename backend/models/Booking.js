@@ -3,12 +3,11 @@ const mongoose = require("mongoose");
 const bookingSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    court: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Court",
-      required: true,
-    },
+    court: { type: Number, required: true }, // Court 1, 2, or 3
     date: { type: Date, required: true },
+    startTime: { type: String, required: true },
+    endTime: { type: String, required: true },
+    isRecurring: { type: Boolean, default: false }, // Recurring Booking Flag
     status: {
       type: String,
       enum: ["pending", "confirmed", "cancelled"],

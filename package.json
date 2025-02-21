@@ -1,0 +1,25 @@
+{
+  "name": "badminton-management-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node backend/server.js",
+    "client": "npm start --prefix frontend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/poorna-theekshana/badminton-management-system.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/poorna-theekshana/badminton-management-system/issues"
+  },
+  "homepage": "https://github.com/poorna-theekshana/badminton-management-system#readme",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
