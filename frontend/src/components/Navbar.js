@@ -36,10 +36,20 @@ const Navbar = () => {
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-      <div className="container-fluid">
-        <Link className="navbar-brand fw-bold" to="/">
+      <div className="container-fluid position-relative">
+        {/* Left Side: Logo & Brand */}
+        <Link className="navbar-brand fw-bold" to="/home">
           🏸 Badminton Booking
         </Link>
+
+        {/* Center: Admin Badge (Perfectly Centered) */}
+        {user?.role === "admin" && (
+          <div className="position-absolute start-50 translate-middle-x">
+            <span className="badge bg-warning text-dark">Admin Access</span>
+          </div>
+        )}
+
+        {/* Right Side: Navbar Items */}
         <button
           className="navbar-toggler"
           type="button"
@@ -60,8 +70,8 @@ const Navbar = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/bookings">
-                Bookings
+              <Link className="nav-link" to="#">
+                Store
               </Link>
             </li>
             <li className="nav-item">
@@ -69,13 +79,6 @@ const Navbar = () => {
                 Profile
               </Link>
             </li>
-            {user?.role === "admin" && (
-              <li className="nav-item">
-                <span className="badge bg-warning text-dark ms-3">
-                  Admin Access
-                </span>
-              </li>
-            )}
             <li className="nav-item">
               <button className="btn btn-light ms-2" onClick={handleLogout}>
                 Logout

@@ -14,7 +14,7 @@ const BookingsPage = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      navigate("/login");
+      navigate("/");
     } else {
       fetch("http://localhost:5000/api/auth/me", {
         headers: { Authorization: `Bearer ${token}` },
@@ -25,12 +25,12 @@ const BookingsPage = () => {
             setUser(data.user);
             fetchUserBookings(data.user._id);
           } else {
-            navigate("/login");
+            navigate("/");
           }
         })
         .catch((err) => {
           console.error("Auth Fetch Error:", err);
-          navigate("/login");
+          navigate("/");
         });
     }
   }, [navigate]);

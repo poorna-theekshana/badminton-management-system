@@ -24,7 +24,7 @@ const HomePage = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      navigate("/login");
+      navigate("/");
     } else {
       fetch("http://localhost:5000/api/auth/me", {
         headers: { Authorization: `Bearer ${token}` },
@@ -34,12 +34,12 @@ const HomePage = () => {
           if (data.user) {
             setUser(data.user);
           } else {
-            navigate("/login");
+            navigate("/");
           }
         })
         .catch((err) => {
           console.error("Auth Fetch Error:", err);
-          navigate("/login");
+          navigate("/");
         });
     }
   }, [navigate]);

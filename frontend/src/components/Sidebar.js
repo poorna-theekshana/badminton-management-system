@@ -10,7 +10,7 @@ const Sidebar = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      navigate("/login");
+      navigate("/");
     } else {
       fetch("http://localhost:5000/api/auth/me", {
         headers: { Authorization: `Bearer ${token}` },
@@ -20,12 +20,12 @@ const Sidebar = () => {
           if (data.user) {
             setUser(data.user);
           } else {
-            navigate("/login");
+            navigate("/");
           }
         })
         .catch((err) => {
           console.error("Auth Fetch Error:", err);
-          navigate("/login");
+          navigate("/");
         });
     }
   }, [navigate]);
@@ -35,11 +35,11 @@ const Sidebar = () => {
       <ul className="nav nav-pills flex-column mb-auto">
         <li className="nav-item">
           <Link to="/home" className="nav-link text-white">
-            🏠 Dashboard
+            📊 Dashboard
           </Link>
         </li>
 
-        {/* ✅ Show different options for admin and regular users */}
+        {/* Show different options for admin and regular users */}
         {user?.role === "admin" ? (
           <>
             <li className="nav-item">
@@ -65,7 +65,7 @@ const Sidebar = () => {
 
         <li className="nav-item">
           <Link to="/profile" className="nav-link text-white">
-            👤 Profile
+            🙎🏻‍♂️ Profile
           </Link>
         </li>
       </ul>
