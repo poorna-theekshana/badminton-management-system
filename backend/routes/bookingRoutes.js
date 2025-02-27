@@ -4,7 +4,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// ✅ Get all bookings (Make sure everyone can see all bookings)
+// Get all bookings 
 router.get("/", authMiddleware, async (req, res) => {
   try {
     const bookings = await Booking.find().populate("user", "name email");
@@ -14,10 +14,10 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
-// ✅ Get bookings for a specific user
+// Get bookings for a specific user
 router.get("/user/:userId", authMiddleware, async (req, res) => {
   try {
-    // Prevent normal users from accessing other users' bookings
+    // Prevent accessing other users' bookings
     if (req.user.role !== "admin" && req.user._id.toString() !== req.params.userId) {
       return res.status(403).json({ message: "Unauthorized access!" });
     }
@@ -33,7 +33,7 @@ router.get("/user/:userId", authMiddleware, async (req, res) => {
   }
 });
 
-// ✅ Create a new booking
+// Create a new booking
 router.post("/", authMiddleware, async (req, res) => {
   try {
     const { user, court, date, startTime, endTime } = req.body;
@@ -53,7 +53,7 @@ router.post("/", authMiddleware, async (req, res) => {
       startTime,
       endTime,
       status: "confirmed",
-      recurring: false, // ✅ Default to non-recurring
+      recurring: false,
     });
 
     await newBooking.save();
@@ -63,7 +63,7 @@ router.post("/", authMiddleware, async (req, res) => {
   }
 });
 
-// ✅ Delete a booking (Only the user who booked it or admin)
+// Delete a booking (Only the user who booked it or admin)
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id);
@@ -72,7 +72,7 @@ router.delete("/:id", authMiddleware, async (req, res) => {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    // ✅ Allow only the booking owner or admin to delete it
+    // Allow only the booking owner or admin to delete it
     if (req.user.role !== "admin" && booking.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Unauthorized to delete this booking" });
     }
@@ -86,7 +86,7 @@ router.delete("/:id", authMiddleware, async (req, res) => {
   }
 });
 
-// ✅ Get all recurring bookings (Admin only)
+// Get all recurring bookings (Admin only)
 router.get("/recurring", authMiddleware, async (req, res) => {
   try {
     if (req.user.role !== "admin") {
@@ -105,7 +105,7 @@ router.get("/recurring", authMiddleware, async (req, res) => {
   }
 });
 
-// ✅ Mark a booking as recurring (Admin Only)
+// Mark a booking as recurring (Admin Only)
 router.put("/recurring/:id", authMiddleware, async (req, res) => {
   try {
     if (req.user.role !== "admin") {
@@ -132,7 +132,7 @@ router.put("/recurring/:id", authMiddleware, async (req, res) => {
   }
 });
 
-// ✅ Remove a recurring booking (Admin Only)
+// Remove a recurring booking (Admin Only)
 router.put("/recurring/remove/:id", authMiddleware, async (req, res) => {
   try {
     if (req.user.role !== "admin") {

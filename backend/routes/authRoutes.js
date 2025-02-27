@@ -8,7 +8,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 require("dotenv").config();
 const router = express.Router();
 
-// ✅ User registration
+// User registration
 router.post(
   "/register",
   [
@@ -40,7 +40,7 @@ router.post(
   }
 );
 
-// ✅ User login
+// User login
 router.post(
   "/login",
   [
@@ -71,7 +71,7 @@ router.post(
   }
 );
 
-// ✅ Get current user info
+//  Get current user info
 router.get("/me", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");

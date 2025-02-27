@@ -23,14 +23,27 @@ const AddItem = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    Object.keys(item).forEach((key) => formData.append(key, item[key]));
+
+    formData.append("name", item.name);
+    formData.append("description", item.description);
+    formData.append("price", parseFloat(item.price)); // Convert to number
+    formData.append("quantity", parseInt(item.quantity, 10)); // Convert to integer
+    if (item.image) {
+      formData.append("image", item.image);
+    }
 
     try {
       const response = await fetch("http://localhost:5000/api/items", {
         method: "POST",
         body: formData,
       });
+
       const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to add item");
+      }
+
       alert("Item added successfully!");
       console.log("Item added:", data);
     } catch (error) {

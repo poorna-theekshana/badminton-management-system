@@ -6,22 +6,26 @@ const path = require("path");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 
-// ✅ Configure Multer for File Uploads
+// Ensure the uploads directory exists
+const uploadDir = path.join(__dirname, "../uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// Configure Multer Storage for image uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/");
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    const uniqueName = `${uuidv4()}-${Date.now()}${path.extname(
-      file.originalname
-    )}`;
-    cb(null, uniqueName);
+    const uniqueFilename = `${uuidv4()}-${Date.now()}${path.extname(file.originalname)}`;
+    cb(null, uniqueFilename);
   },
 });
 
 const upload = multer({ storage });
 
-// ✅ GET all items
+// GET all items
 router.get("/", async (req, res) => {
   try {
     const items = await Item.find();
@@ -31,28 +35,36 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ✅ ADD a new item (with image upload)
+// Add New Item
 router.post("/", upload.single("image"), async (req, res) => {
   try {
     const { name, description, price, quantity } = req.body;
-    const image = req.file ? `/uploads/${req.file.filename}` : null;
+
+    // Validate required fields
+    if (!name || !description || !price || !quantity) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    // Ensure the image path is stored in the database
+    const imagePath = req.file ? `/uploads/${req.file.filename}` : null;
 
     const newItem = new Item({
       name,
       description,
-      price: parseFloat(price), // Ensure price is stored as a number
-      quantity: parseInt(quantity, 10), // Ensure quantity is an integer
-      image,
+      price: parseFloat(price),
+      quantity: parseInt(quantity, 10),
+      image: imagePath,
     });
 
-    const savedItem = await newItem.save();
-    res.status(201).json(savedItem);
+    await newItem.save();
+    res.status(201).json({ message: "Item added successfully", item: newItem });
   } catch (error) {
-    res.status(500).json({ message: "Error adding item", error });
+    console.error("Error adding item:", error);
+    res.status(500).json({ message: "Failed to add item", error });
   }
 });
 
-// ✅ UPDATE item quantity
+// UPDATE item quantity only
 router.put("/:id", async (req, res) => {
   try {
     const { quantity } = req.body;
@@ -75,13 +87,13 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// ✅ DELETE item (also remove image file)
+// DELETE item
 router.delete("/:id", async (req, res) => {
   try {
     const item = await Item.findById(req.params.id);
     if (!item) return res.status(404).json({ message: "Item not found" });
 
-    // ✅ Remove Image File if Exists
+    // Remove Image File if Exists
     if (item.image) {
       const imagePath = path.resolve(__dirname, "..", item.image);
       if (fs.existsSync(imagePath)) {
@@ -89,7 +101,7 @@ router.delete("/:id", async (req, res) => {
       }
     }
 
-    // ✅ Remove item from the database
+    // Remove item from the database
     await Item.findByIdAndDelete(req.params.id);
     res.json({ message: "Item and image deleted successfully" });
   } catch (error) {

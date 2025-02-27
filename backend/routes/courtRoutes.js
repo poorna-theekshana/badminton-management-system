@@ -14,16 +14,16 @@ router.get("/", authMiddleware, async (req, res) => {
 });
 
 // Register a new court
-router.post("/register", authMiddleware, async (req, res) => {
-  const { name, location, type } = req.body;
+// router.post("/register", authMiddleware, async (req, res) => {
+//   const { name, location, type } = req.body;
 
-  try {
-    const court = new Court({ name, location, type });
-    await court.save();
-    res.status(201).json({ message: "Court registered successfully", court });
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
+//   try {
+//     const court = new Court({ name, location, type });
+//     await court.save();
+//     res.status(201).json({ message: "Court registered successfully", court });
+//   } catch (error) {
+//     res.status(400).json({ message: error.message });
+//   }
+// });
 
 module.exports = router;

@@ -4,7 +4,7 @@ const User = require("../models/User");
 const Booking = require("../models/Booking");
 const authMiddleware = require("../middleware/authMiddleware");
 
-// ✅ Get all users (Admin Only)
+// Get all users (Admin Only)
 router.get("/", authMiddleware, async (req, res) => {
   try {
     if (req.user.role !== "admin") {
@@ -18,7 +18,7 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
-// ✅ Delete a user (Admin Only)
+// Delete a user (Admin Only)
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
     if (req.user.role !== "admin") {
@@ -40,7 +40,7 @@ router.delete("/:id", authMiddleware, async (req, res) => {
   }
 });
 
-// ✅ Toggle User Role (Admin ↔ User)
+// Toggle User Role 
 router.put("/toggle-role/:id", authMiddleware, async (req, res) => {
   try {
     if (req.user.role !== "admin") {
@@ -52,7 +52,7 @@ router.put("/toggle-role/:id", authMiddleware, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    user.role = user.role === "admin" ? "user" : "admin"; // Toggle role
+    user.role = user.role === "admin" ? "user" : "admin";
     await user.save();
 
     res.json({

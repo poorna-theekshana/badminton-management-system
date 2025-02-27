@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const bookingSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    court: { type: Number, required: true }, // Court 1, 2, or 3
+    court: { type: Number, required: true },
     date: { type: Date, required: true },
     startTime: { type: String, required: true },
     endTime: { type: String, required: true },
