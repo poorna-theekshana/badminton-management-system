@@ -13,6 +13,7 @@ const bookingSchema = new mongoose.Schema(
       enum: ["pending", "confirmed", "cancelled"],
       default: "pending",
     },
+    recurring: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const AuthPage = () => {
@@ -50,7 +50,7 @@ const AuthPage = () => {
     <div className="d-flex vh-100 align-items-center justify-content-center bg-light">
       <div
         className="row shadow-lg rounded overflow-hidden bg-white"
-        style={{ width: "850px", minHeight: "600px" }} // ⬅ Increased min-height
+        style={{ width: "850px", minHeight: "620px" }} // ⬅ Increased min-height
       >
         {/* Left Side - Form */}
         <div
@@ -147,6 +147,13 @@ const AuthPage = () => {
                   </span>
                 </>
               )}
+            </p>
+
+            {/* ✅ Store Access Link */}
+            <p className="text-center mt-2">
+              <Link to="/store" className="text-success fw-bold">
+                Visit the Store
+              </Link>
             </p>
           </form>
         </div>

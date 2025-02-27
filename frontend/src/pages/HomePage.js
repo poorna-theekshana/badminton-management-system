@@ -57,7 +57,7 @@ const HomePage = () => {
       const data = await response.json();
       console.log("Bookings Data Fetched:", data);
 
-      setBookings(data); // Update bookings state
+      setBookings(data); // ✅ Ensure ALL bookings are stored
     } catch (err) {
       console.error("Error fetching bookings:", err);
     }
@@ -156,10 +156,15 @@ const HomePage = () => {
         moment(b.date).isSame(moment(date), "day")
     );
 
-    if (!booking) return "bg-success"; // Available (Green)
-    return booking.isRecurring ? "bg-primary" : "bg-danger"; // Recurring (Blue), Normal (Red)
-  };
+    const isPastSlot = moment(`${date} ${time}`, "YYYY-MM-DD hh:mm A").isBefore(
+      moment()
+    );
 
+    if (isPastSlot) return "bg-secondary";
+    if (!booking) return "bg-success"; 
+    if (booking.recurring) return "bg-primary"; 
+    return "bg-danger"; 
+  };
 
   const isSlotBooked = (time, court, date) => {
     const booking = bookings.find(
@@ -190,7 +195,10 @@ const HomePage = () => {
               <h4 className="text-muted pt-1">
                 Available
                 <span className="badge bg-success p-2 mx-2">     </span>/ Booked
-                <span className="badge bg-danger p-2 mx-2">     </span>
+                <span className="badge bg-danger p-2 mx-2">     </span>/
+                Recurring
+                <span className="badge bg-primary p-2 mx-2">     </span> / Past
+                <span className="badge bg-secondary p-2 mx-2">     </span>
               </h4>
             </h3>
           </div>
@@ -223,7 +231,7 @@ const HomePage = () => {
                         const date = moment()
                           .add(dayIdx, "days")
                           .format("YYYY-MM-DD");
-                        const bookedClass = isSlotBooked(time, court, date);
+                        const slotColor = getSlotColor(time, court, date);
                         const isPastSlot = moment(
                           `${date} ${time}`,
                           "YYYY-MM-DD hh:mm A"
@@ -232,20 +240,17 @@ const HomePage = () => {
                         return (
                           <td
                             key={`${date}-${time}-${court}`}
-                            className={
-                              bookedClass ||
-                              (isPastSlot ? "bg-secondary" : "bg-success")
-                            }
+                            className={slotColor}
                             onClick={() =>
-                              !bookedClass &&
+                              slotColor === "bg-success" &&
                               !isPastSlot &&
                               handleBookSlot(court, date, time)
                             }
                             style={{
                               cursor:
-                                bookedClass || isPastSlot
-                                  ? "not-allowed"
-                                  : "pointer",
+                                slotColor === "bg-success" && !isPastSlot
+                                  ? "pointer"
+                                  : "not-allowed",
                             }}
                           ></td>
                         );

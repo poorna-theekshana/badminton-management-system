@@ -131,9 +131,18 @@ const AdminBookingsPage = () => {
 
                       {/* Status & Cancel Button */}
                       <div className="d-flex align-items-center">
-                        <span className="badge bg-success p-2 me-3">
-                          Confirmed
-                        </span>
+                        {/* Status Tag (Show Confirmed Only When Status is Confirmed) */}
+                        {booking.status === "confirmed" && (
+                          <span
+                            className={`badge p-2 me-3 ${
+                              booking.recurring ? "bg-primary" : "bg-success"
+                            }`}
+                          >
+                            {booking.recurring ? "Recurring" : "Confirmed"}
+                          </span>
+                        )}
+
+                        {/* Cancel Booking Button */}
                         <button
                           className="btn btn-danger"
                           onClick={() => handleDeleteBooking(booking._id)}

@@ -62,12 +62,33 @@ const Sidebar = () => {
             </Link>
           </li>
         )}
-
+        {user && user.role === "admin" && (
+          <li>
+            <a href="/admin/users" className="nav-link text-white">
+              👥 Manage Users
+            </a>
+          </li>
+        )}
+        <hr />
         <li className="nav-item">
-          <Link to="/profile" className="nav-link text-white">
-            🙎🏻‍♂️ Profile
+          <Link to="/store" className="nav-link text-white">
+            🛒 Store
           </Link>
         </li>
+        {user?.role === "admin" && (
+          <>
+            <li className="nav-item">
+              <Link to="/admin/store" className="nav-link text-white">
+                📦 Manage Store
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/admin/add-item" className="nav-link text-white">
+                ➕ Add Item
+              </Link>
+            </li>
+          </>
+        )}
       </ul>
     </div>
   );

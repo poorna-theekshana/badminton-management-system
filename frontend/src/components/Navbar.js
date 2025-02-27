@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const location = useLocation();
+  const isStorePage = location.pathname === "/store"; // Check if on store page
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
+
+    // ✅ Only check auth if NOT on the store page
+    if (!token && !isStorePage) {
       navigate("/");
-    } else {
+    } else if (token) {
       fetch("http://localhost:5000/api/auth/me", {
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -18,16 +22,17 @@ const Navbar = () => {
         .then((data) => {
           if (data.user) {
             setUser(data.user);
-          } else {
+          } else if (!isStorePage) {
             navigate("/");
           }
         })
-        .catch((err) => {
-          console.error("Auth Fetch Error:", err);
-          navigate("/");
+        .catch(() => {
+          if (!isStorePage) {
+            navigate("/");
+          }
         });
     }
-  }, [navigate]);
+  }, [navigate, isStorePage]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -36,56 +41,54 @@ const Navbar = () => {
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-      <div className="container-fluid position-relative">
-        {/* Left Side: Logo & Brand */}
+      <div className="container-fluid">
         <Link className="navbar-brand fw-bold" to="/home">
           🏸 Badminton Booking
         </Link>
 
-        {/* Center: Admin Badge (Perfectly Centered) */}
-        {user?.role === "admin" && (
-          <div className="position-absolute start-50 translate-middle-x">
-            <span className="badge bg-warning text-dark">Admin Access</span>
-          </div>
+        {isStorePage ? (
+          <Link to="/home" className="btn btn-warning">
+            Dashboard
+          </Link>
+        ) : (
+          <>
+            {user?.role === "admin" && (
+              <span className="badge bg-warning text-dark mx-3">
+                Admin Access
+              </span>
+            )}
+            <button
+              className="navbar-toggler"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#navbarNav"
+              aria-controls="navbarNav"
+              aria-expanded="false"
+              aria-label="Toggle navigation"
+            >
+              <span className="navbar-toggler-icon"></span>
+            </button>
+            <div className="collapse navbar-collapse" id="navbarNav">
+              <ul className="navbar-nav ms-auto">
+                <li className="nav-item">
+                  <Link className="nav-link" to="/store">
+                    Store
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/profile">
+                    Profile
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <button className="btn btn-light ms-2" onClick={handleLogout}>
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </>
         )}
-
-        {/* Right Side: Navbar Items */}
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <Link className="nav-link" to="/">
-                Home
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="#">
-                Store
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/profile">
-                Profile
-              </Link>
-            </li>
-            <li className="nav-item">
-              <button className="btn btn-light ms-2" onClick={handleLogout}>
-                Logout
-              </button>
-            </li>
-          </ul>
-        </div>
       </div>
     </nav>
   );

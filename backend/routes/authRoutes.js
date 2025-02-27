@@ -4,11 +4,11 @@ const { check, validationResult } = require("express-validator");
 const User = require("../models/User");
 const { generateToken } = require("../utils/jwt");
 const authMiddleware = require("../middleware/authMiddleware");
-require("dotenv").config();
 
+require("dotenv").config();
 const router = express.Router();
 
-// User registration
+// ✅ User registration
 router.post(
   "/register",
   [
@@ -23,17 +23,16 @@ router.post(
     if (!errors.isEmpty())
       return res.status(400).json({ errors: errors.array() });
 
-    const { name, email, password } = req.body;
+    const { name, email, password, mobile } = req.body;
 
     try {
       let user = await User.findOne({ email });
       if (user) return res.status(400).json({ message: "User already exists" });
 
-      user = new User({ name, email, password });
+      user = new User({ name, email, password, mobile: mobile || "N/A" });
       await user.save();
 
       const token = generateToken(user);
-
       res.status(201).json({ message: "User registered successfully", token });
     } catch (err) {
       res.status(500).json({ message: "Server error" });
@@ -41,7 +40,7 @@ router.post(
   }
 );
 
-// User login
+// ✅ User login
 router.post(
   "/login",
   [
@@ -65,7 +64,6 @@ router.post(
         return res.status(400).json({ message: "Invalid credentials" });
 
       const token = generateToken(user);
-
       res.json({ message: "Login successful", token });
     } catch (err) {
       res.status(500).json({ message: "Server error" });
@@ -73,7 +71,7 @@ router.post(
   }
 );
 
-// Get current user info
+// ✅ Get current user info
 router.get("/me", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");

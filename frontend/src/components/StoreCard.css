@@ -1,0 +1,66 @@
+/* Store Card Container */
+.store-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out;
+    text-align: center;
+    padding: 10px;
+    position: relative;
+}
+
+.store-card:hover {
+    transform: scale(1.05);
+}
+
+/* Stock Badge (Optional: Top Right Corner) */
+.stock-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 12px;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    color: white;
+}
+
+.in-stock {
+    background: #28a745;
+}
+
+.out-of-stock {
+    background: #dc3545;
+}
+
+/* Product Image */
+.store-card-img img {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    padding: 10px;
+}
+
+/* Product Title */
+.store-card-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #333;
+}
+
+/* Product Description */
+.store-card-description {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Product Price */
+.store-card-price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #28a745;
+    margin: 5px 0;
+}
